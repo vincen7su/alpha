@@ -24,3 +24,8 @@ export const rateMapValue = selector({
   })
 })
 
+export const franciumLendingRateMapState = atom({
+  key: 'FranciumLendingRateMap',
+  default: {}
+})
+

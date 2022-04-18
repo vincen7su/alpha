@@ -13,3 +13,9 @@ export const soceanState = atom({
   dangerouslyAllowMutability: true
 })
 
+export const franciumState = atom({
+  key: 'Francium',
+  default: null,
+  dangerouslyAllowMutability: true
+})
+

@@ -15,13 +15,15 @@ import {
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import { TOKEN_LIST_URL, Jupiter } from '@jup-ag/core'
 import { Socean } from '@soceanfi/stake-pool-sdk'
+import FranciumSDK from 'francium-sdk'
 import { deserializeUnchecked } from 'borsh'
 import Header from '@/components/Header'
 import Dashboard from '@/components/Dashboard'
 import { networkState, endpointState, connectionState, tokenMapState } from '@/recoil/Network'
 import { walletState } from '@/recoil/Wallet'
-import { jupiterState, soceanState } from '@/recoil/Api'
-import { stSolRateState, scnSolRateState, jSolRateState } from '@/recoil/RateMap'
+import { jupiterState, soceanState, franciumState } from '@/recoil/Api'
+import { stSolRateState, scnSolRateState, jSolRateState, franciumLendingRateMapState } from '@/recoil/RateMap'
+import { franciumPositionState } from '@/recoil/LendingPosition'
 import { LIDO_ADDRESS, Lido, schema } from './constants/lidoSchema'
 import jPoolSchema from './constants/jPoolSchema'
 
@@ -36,6 +38,7 @@ function App() {
 
   const [network] = useRecoilState(networkState)
   const [socean] = useRecoilState(soceanState)
+  const [francium, setFrancium] = useRecoilState(franciumState)
   const [, setConnection] = useRecoilState(connectionState)
   const [, setWallet] = useRecoilState(walletState)
   const [, setTokenMap] = useRecoilState(tokenMapState)
@@ -43,10 +46,13 @@ function App() {
   const [, setStSolRate] = useRecoilState(stSolRateState)
   const [, setScnSolRate] = useRecoilState(scnSolRateState)
   const [, setJSolRate] = useRecoilState(jSolRateState)
+  const [, setFranciumLendingRateMap] = useRecoilState(franciumLendingRateMapState)
+  const [, setFranciumPosition] = useRecoilState(franciumPositionState)
 
   useEffect(() => {
     setConnection(connection)
-  }, [connection, setConnection])
+    setFrancium(new FranciumSDK({ connection }))
+  }, [connection])
 
   useEffect(() => {
     setWallet(wallet)
@@ -119,6 +125,39 @@ function App() {
       // routeCacheDuration: CACHE_DURATION_MS
     }).then(setJupiter)
   }, [network, connection, wallet.publicKey, setJupiter])
+
+  useEffect(() => {
+    if (!francium) {
+      return
+    }
+    const getLendingPoolTVL = () => francium.getLendingPoolTVL()
+      .then(lendingPool => {
+        const lendingRateMap = {}
+        lendingPool.forEach(({ id, apy }) => {
+          lendingRateMap[id] = apy
+        })
+        setFranciumLendingRateMap(lendingRateMap)
+      })
+    const timer = setInterval(getLendingPoolTVL, 10000)
+    return () => clearInterval(timer)
+  }, [francium])
+
+  useEffect(() => {
+    if (!francium || !wallet.publicKey) {
+      return
+    }
+    const getUserLendingPosition = () => francium.getUserLendingPosition(wallet.publicKey)
+      .then(positionList => {
+        const positionMap = {}
+        positionList.forEach(({ pool, totalAmount }) => {
+          positionMap[pool] = totalAmount // already convert to display decimal
+        })
+        setFranciumPosition(positionMap)
+      })
+    getUserLendingPosition()
+    const timer = setInterval(getUserLendingPosition, 10000)
+    return () => clearInterval(timer)
+  }, [francium, wallet.publicKey])
 
   return (
     <div className="app">
