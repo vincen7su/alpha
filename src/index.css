@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Open+Sans&display=swap');
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #010203;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+}
+
+input {
+  color: white;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+@keyframes glitch {
+  0%   { transform: translate3d(1px, 3px, 0); }
+  25%  { fill: rgba(0, 255, 0, 0.75); transform: translate3d(-2px, -1px, 0); }
+  50%  { transform: translate3d(4px, -3px, 0); }
+  75%  { fill: rgba(255, 0, 0, 0.75); transform: translate3d(-3px, 3px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes shining {
+  0%   { opacity: 1; }
+  50%  { opacity: .3; }
+}
+
+@keyframes gredientAnimation {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
