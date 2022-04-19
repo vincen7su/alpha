@@ -12,6 +12,10 @@ export function format(s, config = {
   return BigNumber(s).toFixed(config.dp, config.rm)
 }
 
+export function compareNumber(a, b) {
+  return b - a
+}
+
 export function parseRemainingTime({ days, hours, minutes }) {
   days = days > 0 ? `${days}d` : ''
   hours = hours > 0 ? ` ${hours}h` : ''

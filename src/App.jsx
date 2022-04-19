@@ -86,6 +86,7 @@ function App() {
 
       // Calculate the stSOL/SOL exchange rate
       const exchangeRate =  BigNumber(totalStSolSupplyInLamports).div(totalSolInLamports).toNumber()
+      console.log(`stSOL rate: ${exchangeRate}`)
       setStSolRate(exchangeRate)
     })
     connection.getAccountInfo(new PublicKey(jPoolSchema.address)).then(accountInfo => {
@@ -98,6 +99,7 @@ function App() {
       poolTokenSupply = poolTokenSupply.toNumber()
       // Calculate the JSOL/SOL exchange rate
       const exchangeRate =  BigNumber(poolTokenSupply).div(totalLamports).toNumber()
+      console.log(`JSOL rate: ${exchangeRate}`)
       setJSolRate(exchangeRate)
     })
   }, [connection])
@@ -112,6 +114,7 @@ function App() {
       poolTokenSupply = poolTokenSupply.toNumber()
       // Calculate the scnSOL/SOL exchange rate
       const exchangeRate =  BigNumber(poolTokenSupply).div(totalStakeLamports).toNumber()
+      console.log(`scnSOL rate: ${exchangeRate}`)
       setScnSolRate(exchangeRate)
     })
   }, [socean])

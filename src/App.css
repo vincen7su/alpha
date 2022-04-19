@@ -76,7 +76,7 @@
 }
 
 .dashboard .icon-zap {
-  margin: 20px 0;
+  margin-top: 20px;
   cursor: pointer;
 }
 
@@ -86,13 +86,35 @@
   align-items: center;
   justify-content: center;
   padding: 15px 0;
-  border-radius: 30px;
+  border-radius: 10px;
   font-size: 18px;
   font-weight: bold;
   background: linear-gradient(270deg, #9945ff, #14f195);
   background-size: 400% 400%;
   animation: gredientAnimation 10s ease infinite;
   cursor: pointer;
+  margin-top: 30px;
+}
+
+.dashboard .zap-button.disabled {
+  cursor: not-allowed;
+  background: grey;
+}
+
+.dashboard .option-list {
+  height: 185px;
+  margin-top: 30px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard .wallet-adapter-button {
+  width: 100%;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
   margin-top: 30px;
 }
 
@@ -105,6 +127,14 @@
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dashboard .swap-option.selected {
+  border-color: white;
 }
 
 .swap-option + .swap-option {

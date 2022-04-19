@@ -4,25 +4,27 @@ import BigNumber from 'bignumber.js'
 import Token from './Token'
 import IconZap from './IconZap'
 import SwapOption from './SwapOption'
+import ActionButton from './ActionButton'
 import { tokenMapState, tokenMapReadyValue } from '@/recoil/Network'
 import { jupiterState } from '@/recoil/Api'
 import { rateMapValue } from '@/recoil/RateMap'
-import { debounce } from '@/utils'
+import { walletState, walletBalanceState } from '@/recoil/Wallet'
+import { compareNumber, debounce } from '@/utils'
 
 const SOL_LIST = ['scnSOL', 'stSOL', 'JSOL']
-
-function compareNumbers(a, b) {
-  return b - a
-}
+const ROUTE_REFRESH_TIME = 20000
 
 export default function Dashboard() {
   const [tokenMap] = useRecoilState(tokenMapState)
+  const [{ publicKey }] = useRecoilState(walletState)
+  const [balance] = useRecoilState(walletBalanceState)
   const [jupiter] = useRecoilState(jupiterState)
   const [rateMap] = useRecoilState(rateMapValue)
   const isReady = useRecoilValue(tokenMapReadyValue)
   const [timer, setTimer] = useState(null)
   const [routeList, setRouteList] = useState([])
   const [amount, setAmount] = useState('20')
+  const [optionIndex, setOptionIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const slippagePercentage = 0.1 // 1 = 1%
 
@@ -88,7 +90,7 @@ export default function Dashboard() {
         rate,
         premium
       }
-    }).sort((a, b) => compareNumbers(a.premium, b.premium))).then(routeList => {
+    }).sort((a, b) => compareNumber(a.premium, b.premium))).then(routeList => {
       setRouteList(routeList)
       setIsLoading(false)
     })
@@ -109,7 +111,7 @@ export default function Dashboard() {
       amount
     }
     debounceUpdateRate(params)
-    const newTimer = setInterval(() => updateRate(params), 10000)
+    const newTimer = setInterval(() => updateRate(params), ROUTE_REFRESH_TIME)
     setTimer(newTimer)
     return () => clearInterval(newTimer)
   }, [isReady, jupiter, amount])
@@ -130,8 +132,29 @@ export default function Dashboard() {
       amount
     }
     debounceUpdateRate(params)
-    const newTimer = setInterval(() => updateRate(params), 10000)
+    const newTimer = setInterval(() => updateRate(params), ROUTE_REFRESH_TIME)
     setTimer(newTimer)
+  }
+
+  const onZap = () => {
+    if (isLoading) {
+      return
+    }
+    setIsLoading(true)
+
+    const bestRoute = routeList[optionIndex].route
+    jupiter.exchange({ bestRoute })
+      .then(({ execute }) => execute())
+      .then(swapResult => {
+        if (swapResult.error) {
+          console.log(swapResult.error)
+        } else {
+          console.log(`https://solscan.io/tx/${swapResult.txid}`)
+          console.log(`inputAddress=${swapResult.inputAddress.toString()} outputAddress=${swapResult.outputAddress.toString()}`)
+          console.log(`inputAmount=${swapResult.inputAmount} outputAmount=${swapResult.outputAmount}`)
+        }
+      })
+      .finally(() => setIsLoading(false))
   }
 
   const SwapRouteList = routeList.map(({
@@ -139,17 +162,22 @@ export default function Dashboard() {
     route,
     rate,
     premium
-  }) =>
+  }, index) =>
     <SwapOption
       key={symbol}
       symbol={symbol}
       route={route}
       rate={rate}
       premium={premium}
+      selected={index === optionIndex}
+      onClick={() => setOptionIndex(index)}
     />
   )
 
   const iconZapLoadingClass = isLoading ? 'loading' : ''
+  const finalAmount = Number(amount)
+  const isDisable = finalAmount === 0
+  const isInsufficientBalance = finalAmount > balance
 
   return (
     <div className="dashboard">
@@ -164,9 +192,14 @@ export default function Dashboard() {
         />
       </div>
       <IconZap className={`noselect icon-zap ${iconZapLoadingClass}`} onClick={onRefresh} />
-      { SwapRouteList }
-
-      <div className="noselect zap-button">Zap In</div>
+      <div className="option-list">{ SwapRouteList }</div>
+      <ActionButton
+        isDisable={isDisable}
+        isLoading={isLoading}
+        isInsufficientBalance={isInsufficientBalance}
+        text="Zap In"
+        onClick={onZap}
+      />
     </div>
   )
 }
