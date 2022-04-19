@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import BigNumber from 'bignumber.js'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { connectionState } from '@/recoil/Network'
+import { connectionState, tokenMapState, tokenMapReadyValue } from '@/recoil/Network'
 import {
   walletState,
   walletBalanceState,
+  walletTokenBalanceMapState,
   walletReadyValue,
   walletBalanceReadyValue,
   walletShortAddressValue
@@ -14,11 +15,16 @@ import {
 
 import { format } from '@/utils'
 
+const tokenList = ['stSOL', 'scnSOL', 'JSOL']
+
 function WalletInfo() {
   const [connection] = useRecoilState(connectionState)
   const [{ connecting, publicKey }] = useRecoilState(walletState)
+  const [tokenMap] = useRecoilState(tokenMapState)
   const [balance, setBalance] = useRecoilState(walletBalanceState)
+  const [walletTokenBalanceMap, setWalletTokenBalanceMap] = useRecoilState(walletTokenBalanceMapState)
   const isReady = useRecoilValue(walletReadyValue)
+  const tokenMapReady = useRecoilValue(tokenMapReadyValue)
   const balanceReady = useRecoilValue(walletBalanceReadyValue)
   const address = useRecoilValue(walletShortAddressValue)
 
@@ -31,10 +37,46 @@ function WalletInfo() {
         .then(balance => setBalance(
           BigNumber(balance).div(LAMPORTS_PER_SOL).toString())
         )
-    getBalance()
-    const timer = setInterval(getBalance, 10000)
+    const getTokenBalance = (
+      symbol,
+      tokenAddress
+    ) => connection.getTokenAccountsByOwner(
+      publicKey,
+      { mint: new PublicKey(tokenAddress) }
+    ).then(result => {
+      if (result.value.length === 0) {
+        return { symbol, balance: 0 }
+      }
+      const userTokenAtaPublicKey = result.value[0].pubkey
+      return connection.getTokenAccountBalance(
+        userTokenAtaPublicKey
+      ).then(result => {
+        return {
+          symbol,
+          balance: result.value.length === 0 ? 0 : result.value.uiAmountString
+        }
+      })
+    })
+
+    const updateWalletBalance = () => {
+      getBalance()
+      tokenMapReady && Promise.all(
+        tokenList.map(symbol =>
+          getTokenBalance(symbol, tokenMap[symbol].address)
+        )
+      ).then(tokenBalanceList => {
+        const tokenBalanceMap = {}
+        tokenBalanceList.forEach(({ symbol, balance }) => {
+          tokenBalanceMap[symbol] = balance
+        })
+        setWalletTokenBalanceMap(tokenBalanceMap)
+      })
+    }
+
+    updateWalletBalance()
+    const timer = setInterval(updateWalletBalance, 10000)
     return () => clearInterval(timer)
-  }, [isReady, connection, publicKey, setBalance])
+  }, [isReady, tokenMapReady, connection, publicKey])
 
   if (connecting) {
     return 'Connecting'

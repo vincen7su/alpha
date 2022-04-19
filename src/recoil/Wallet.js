@@ -13,6 +13,11 @@ export const walletBalanceState = atom({
   default: -1
 })
 
+export const walletTokenBalanceMapState = atom({
+  key: 'WalletTokenBalanceMap',
+  default: {}
+})
+
 export const walletReadyValue = selector({
   key: 'WalletReady',
   get: ({ get }) => {
