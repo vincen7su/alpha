@@ -14,7 +14,7 @@ import { compareNumber, debounce } from '@/utils'
 const SOL_LIST = ['scnSOL', 'stSOL', 'JSOL']
 const ROUTE_REFRESH_TIME = 20000
 
-export default function Dashboard() {
+export default function ZapDashboard() {
   const [tokenMap] = useRecoilState(tokenMapState)
   const [{ publicKey }] = useRecoilState(walletState)
   const [balance] = useRecoilState(walletBalanceState)
@@ -180,7 +180,7 @@ export default function Dashboard() {
   const isInsufficientBalance = finalAmount > balance
 
   return (
-    <div className="dashboard">
+    <div className="zap-dashboard">
       <div className="input-wrap">
         <Token symbol="SOL" />
         <input

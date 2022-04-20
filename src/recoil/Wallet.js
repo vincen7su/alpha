@@ -32,6 +32,11 @@ export const walletBalanceReadyValue = selector({
   get: ({ get }) => get(walletBalanceState) !== -1
 })
 
+export const walletTokenBalanceReadyValue = selector({
+  key: 'WalletTokenBalanceReady',
+  get: ({ get }) => Object.keys(get(walletTokenBalanceMapState)).length > 0
+})
+
 export const walletAddressValue = selector({
   key: 'WalletAddress',
   get: ({ get }) => {

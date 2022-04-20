@@ -20,7 +20,7 @@ export default function ActionButton({
   if (publicKey) {
     return (
       <div
-        className={`noselect zap-button ${buttonDisabledClass}`}
+        className={`noselect action-button ${buttonDisabledClass}`}
         onClick={onClickCheck}
       >{buttonText}</div>
     )

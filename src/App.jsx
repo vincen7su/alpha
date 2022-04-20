@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { RecoilRoot, useRecoilState } from 'recoil'
 import { clusterApiUrl, PublicKey } from '@solana/web3.js'
 import BigNumber from 'bignumber.js'
@@ -18,7 +18,8 @@ import { Socean } from '@soceanfi/stake-pool-sdk'
 import FranciumSDK from 'francium-sdk'
 import { deserializeUnchecked } from 'borsh'
 import Header from '@/components/Header'
-import Dashboard from '@/components/Dashboard'
+import ZapDashboard from '@/components/ZapDashboard'
+import UnstakeDashboard from '@/components/UnstakeDashboard'
 import { networkState, endpointState, connectionState, tokenMapState } from '@/recoil/Network'
 import { walletState } from '@/recoil/Wallet'
 import { jupiterState, soceanState, franciumState } from '@/recoil/Api'
@@ -31,6 +32,16 @@ import './App.css'
 
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css')
+
+const TAB_MAP = {
+  ZAP: 'Zap',
+  UNSTAKE: 'Unstake'
+}
+
+const PANEL_MAP = {
+  ZAP: ZapDashboard,
+  UNSTAKE: UnstakeDashboard
+}
 
 function App() {
   const { connection } = useConnection()
@@ -48,6 +59,7 @@ function App() {
   const [, setJSolRate] = useRecoilState(jSolRateState)
   const [, setFranciumLendingRateMap] = useRecoilState(franciumLendingRateMapState)
   const [, setFranciumPosition] = useRecoilState(franciumPositionState)
+  const [tabKey, setTabKey] = useState('ZAP')
 
   useEffect(() => {
     setConnection(connection)
@@ -162,10 +174,24 @@ function App() {
     return () => clearInterval(timer)
   }, [francium, wallet.publicKey])
 
+  const tabList = Object.keys(TAB_MAP)
+    .map(key =>
+      <div
+        key={key}
+        className={`tab ${key === tabKey ? 'active' : ''}`}
+        onClick={() => setTabKey(key)}
+      >{TAB_MAP[key]}</div>
+    )
+
+  const PanelComponent = PANEL_MAP[tabKey]
+
   return (
     <div className="app">
       <Header />
-      <Dashboard />
+      <div className="tab-list">
+        {tabList}
+      </div>
+      <PanelComponent />
     </div>
   )
 }

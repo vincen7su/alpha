@@ -64,7 +64,24 @@
   letter-spacing: 1px;
 }
 
-.app .dashboard {
+.app .tab-list {
+  display: flex;
+  align-items: center;
+}
+
+.tab-list .tab {
+  margin: 0 15px;
+  font-size: 16px;
+  cursor: pointer;
+  color: rgba(255,255,255, 0.7);
+}
+.tab-list .tab.active {
+  font-weight: bold;
+  color: white;
+}
+
+.app .zap-dashboard,
+.app .unstake-dashboard {
   width: 300px;
   /*border: 1px solid white;
   border-radius: 5px;*/
@@ -75,12 +92,12 @@
   align-items: center;
 }
 
-.dashboard .icon-zap {
+.zap-dashboard .icon-zap {
   margin-top: 20px;
   cursor: pointer;
 }
 
-.dashboard .zap-button {
+.app .action-button {
   width: 100%;
   display: flex;
   align-items: center;
@@ -96,12 +113,12 @@
   margin-top: 30px;
 }
 
-.dashboard .zap-button.disabled {
+.app .action-button.disabled {
   cursor: not-allowed;
   background: grey;
 }
 
-.dashboard .option-list {
+.zap-dashboard .option-list {
   height: 185px;
   margin-top: 30px;
   align-self: stretch;
@@ -109,7 +126,7 @@
   flex-direction: column;
 }
 
-.dashboard .wallet-adapter-button {
+.zap-dashboard .wallet-adapter-button {
   width: 100%;
   justify-content: center;
   border-radius: 10px;
@@ -122,7 +139,7 @@
   animation: shining .3s ease-in infinite;
 }
 
-.dashboard .swap-option {
+.zap-dashboard .swap-option {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -133,7 +150,7 @@
   cursor: pointer;
 }
 
-.dashboard .swap-option.selected {
+.zap-dashboard .swap-option.selected {
   border-color: white;
 }
 
@@ -190,3 +207,24 @@
   text-align: right;
   font-size: 24px;
 }
+
+.unstake-dashboard .token-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.token-list .token-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+.token-list .token-option.selected {
+  border-color: white;
+}
+
