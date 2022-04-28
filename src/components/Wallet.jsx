@@ -90,7 +90,7 @@ function WalletInfo() {
   return (
     <div className="wallet-info">
       <div className="wallet-balance">{ balanceText }</div>
-      <div className="wallet-address">{ address }</div>
+      <div className="wallet-address">{ address }Z</div>
     </div>
   )
 }

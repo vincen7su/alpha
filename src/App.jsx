@@ -20,6 +20,7 @@ import { deserializeUnchecked } from 'borsh'
 import Header from '@/components/Header'
 import ZapDashboard from '@/components/ZapDashboard'
 import UnstakeDashboard from '@/components/UnstakeDashboard'
+import VaultDashboard from '@/components/VaultDashboard'
 import { networkState, endpointState, connectionState, tokenMapState } from '@/recoil/Network'
 import { walletState } from '@/recoil/Wallet'
 import { jupiterState, soceanState, franciumState } from '@/recoil/Api'
@@ -27,6 +28,8 @@ import { stSolRateState, scnSolRateState, jSolRateState, franciumLendingRateMapS
 import { franciumPositionState } from '@/recoil/LendingPosition'
 import { LIDO_ADDRESS, Lido, schema } from './constants/lidoSchema'
 import jPoolSchema from './constants/jPoolSchema'
+import TopologyImage1 from './images/topology-1.png'
+import TopologyImage2 from './images/topology-2.png'
 
 import './App.css'
 
@@ -59,6 +62,7 @@ function App() {
   const [, setJSolRate] = useRecoilState(jSolRateState)
   const [, setFranciumLendingRateMap] = useRecoilState(franciumLendingRateMapState)
   const [, setFranciumPosition] = useRecoilState(franciumPositionState)
+  const [dashboardKey, setDashboardKey] = useState('ZAP')
   const [tabKey, setTabKey] = useState('ZAP')
 
   useEffect(() => {
@@ -187,11 +191,17 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
-      <div className="tab-list">
-        {tabList}
-      </div>
-      <PanelComponent />
+      <img className="topology-image-1" src={TopologyImage1} alt="topology background" />
+      <img className="topology-image-2" src={TopologyImage2} alt="topology background" />
+      <Header dashboardKey={dashboardKey} setDashboardKey={setDashboardKey} />
+      { dashboardKey === 'ZAP' && <div className="tab-list">{tabList}</div> }
+      { dashboardKey === 'ZAP'
+        ? ( tabKey === 'ZAP'
+            ? <ZapDashboard />
+            : <UnstakeDashboard />
+          )
+        : <VaultDashboard />
+      }
     </div>
   )
 }

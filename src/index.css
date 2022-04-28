@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Montserrat&display=swap');
 
 html {
   height: 100%;
@@ -9,9 +9,9 @@ body {
   min-height: 100%;
   padding: 0;
   margin: 0;
-  background-color: #010203;
+  background-color: #121212;
   color: white;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Rubik', sans-serif;
 }
 
 input {

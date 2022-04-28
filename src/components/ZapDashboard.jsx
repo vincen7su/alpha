@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import BigNumber from 'bignumber.js'
 import Token from './Token'
-import IconZap from './IconZap'
+import IconZap from '../images/zap.svg'
 import SwapOption from './SwapOption'
 import ActionButton from './ActionButton'
 import { tokenMapState, tokenMapReadyValue } from '@/recoil/Network'
 import { jupiterState } from '@/recoil/Api'
 import { rateMapValue } from '@/recoil/RateMap'
 import { walletState, walletBalanceState } from '@/recoil/Wallet'
-import { compareNumber, debounce } from '@/utils'
+import { compareNumber, debounce, format } from '@/utils'
 
 const SOL_LIST = ['scnSOL', 'stSOL', 'JSOL']
 const ROUTE_REFRESH_TIME = 20000
@@ -111,9 +111,9 @@ export default function ZapDashboard() {
       amount
     }
     debounceUpdateRate(params)
-    const newTimer = setInterval(() => updateRate(params), ROUTE_REFRESH_TIME)
-    setTimer(newTimer)
-    return () => clearInterval(newTimer)
+    // const newTimer = setInterval(() => updateRate(params), ROUTE_REFRESH_TIME)
+    // setTimer(newTimer)
+    // return () => clearInterval(newTimer)
   }, [isReady, jupiter, amount])
 
   const onAmountInput = event => setAmount(event.target.value.replace(/,/g, ''))
@@ -165,11 +165,12 @@ export default function ZapDashboard() {
   }, index) =>
     <SwapOption
       key={symbol}
+      index={index}
       symbol={symbol}
       route={route}
       rate={rate}
       premium={premium}
-      selected={index === optionIndex}
+      hasLend={symbol === 'stSOL'}
       onClick={() => setOptionIndex(index)}
     />
   )
@@ -181,6 +182,10 @@ export default function ZapDashboard() {
 
   return (
     <div className="zap-dashboard">
+      <div className="balance-row">
+        <div className="label">You Pay</div>
+        { balance !== -1 && <div>Balance: {format(balance)}</div> }
+      </div>
       <div className="input-wrap">
         <Token symbol="SOL" />
         <input
@@ -191,15 +196,22 @@ export default function ZapDashboard() {
           onChange={onAmountInput}
         />
       </div>
-      <IconZap className={`noselect icon-zap ${iconZapLoadingClass}`} onClick={onRefresh} />
-      <div className="option-list">{ SwapRouteList }</div>
-      <ActionButton
+      <div className="icon-row">
+        <img
+          className={`noselect icon-zap ${iconZapLoadingClass}`}
+          src={IconZap }
+          onClick={onRefresh}
+          alt="icon zap"
+        />
+      </div>
+      <div className={`option-list ${SwapRouteList.length > 0 ? 'has-list' : ''}`}>{ SwapRouteList }</div>
+      {/*<ActionButton
         isDisable={isDisable}
         isLoading={isLoading}
         isInsufficientBalance={isInsufficientBalance}
         text="Zap In"
         onClick={onZap}
-      />
+      />*/}
     </div>
   )
 }

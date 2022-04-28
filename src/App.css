@@ -1,4 +1,5 @@
 .app {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -13,15 +14,104 @@
   padding-left: 20px;
   padding-right: 10px;
   box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.74);
 }
+
+.app .header .header-center {
+  display: flex;
+  align-items: center;
+}
+
+.circle-wrap {
+  width: 150px;
+  height: 150px;
+  background: rgb(66, 65, 66);
+  border-radius: 50%;
+  border: 1px solid rgb(66, 65, 66);
+  transform: scale(0.25) translate(-170px,0px);
+}
+
+.circle-wrap .circle .mask,
+.circle-wrap .circle .fill {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.circle-wrap .circle .mask {
+  clip: rect(0px, 150px, 150px, 75px);
+}
+
+.circle-wrap .inside-circle {
+  width: 122px;
+  height: 122px;
+  border-radius: 50%;
+  background: #050505;
+  line-height: 120px;
+  text-align: center;
+  margin-top: 14px;
+  margin-left: 14px;
+  color: white;
+  position: absolute;
+  z-index: 100;
+  font-size: 40px;
+}
+.mask .fill {
+  clip: rect(0px, 75px, 150px, 0px);
+  background-color: #5600E8;
+}
+
+.mask.full,
+.circle .fill {
+  transform: rotate(100deg);
+}
+
+.header .epoch-info {
+  display: flex;
+  flex-direction: column;
+  /*transform: translate(-90px,0px);*/
+}
+
+.epoch-info .remaining-time {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.header .navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 14px;
+  font-weight: bold;
+  flex: 1;
+  cursor: pointer;
+  letter-spacing: 1.25px;
+  /*transform: translate(-80px,0px);*/
+}
+
+.navigation .navigation-link + .navigation-link {
+  margin-left: 40px;
+}
+
+.navigation .navigation-link.active {
+  color: #BB86FC;
+  cursor: default;
+}
+
 
 .header .logo-container {
   position: relative;
   height: 50%;
+  padding-right: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .logo-container .alpha-logo {
-  width: 30px;
+  width: 40px;
   max-height: 100%;
 }
 .alpha-logo.glitch {
@@ -64,37 +154,80 @@
   letter-spacing: 1px;
 }
 
+.app .topology-image-1 {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  height: 400px;
+  transform: translate3d(0, -50%, 0);
+}
+
+.app .topology-image-2 {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 300px;
+}
+
 .app .tab-list {
+  width: 360px;
   display: flex;
-  align-items: center;
+  border-radius: 100px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.74);
+  padding: 6px;
+  box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .tab-list .tab {
-  margin: 0 15px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   cursor: pointer;
+  font-weight: bold;
   color: rgba(255,255,255, 0.7);
 }
 .tab-list .tab.active {
-  font-weight: bold;
-  color: white;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #3700B3;
+  border-radius: 100px;
 }
 
 .app .zap-dashboard,
 .app .unstake-dashboard {
-  width: 300px;
+  width: 360px;
   /*border: 1px solid white;
   border-radius: 5px;*/
-  margin-top: 50px;
+  margin-top: 30px;
   padding: 10px;
   display: flex;
   flex-direction: column;
+}
+
+.zap-dashboard .balance-row {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.balance-row .label {
+  font-size: 16px;
 }
 
 .zap-dashboard .icon-zap {
-  margin-top: 20px;
   cursor: pointer;
+}
+
+.zap-dashboard .icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .app .action-button {
@@ -125,6 +258,17 @@
   display: flex;
   flex-direction: column;
 }
+.zap-dashboard .option-list.has-list:after {
+  content: 'MORE';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #BB86FC;
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 15px;
+  cursor: pointer;
+}
 
 .zap-dashboard .wallet-adapter-button {
   width: 100%;
@@ -140,36 +284,96 @@
 }
 
 .zap-dashboard .swap-option {
+  position: relative;
+  display: flex;
+  padding: 20px;
+  padding-right: 15px;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), #121212;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+.zap-dashboard .swap-option.best {
+  border-color: #7F39FB;
+}
+
+.zap-dashboard .swap-option.best:after {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  transform: translate3d(0, -50%, 0);
+  content: 'Best Deal';
+  display: block;
+  background-color: #70EFDE;
+  padding: 5px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: black;
+  border-radius: 4px;
+}
+.swap-option + .swap-option {
+  margin-top: 10px;
+}
+
+.swap-option .swap-result {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.swap-option .left-column {
+  color: rgba(255, 255, 255, 0.6);
+  flex: 1;
+  padding-right: 15px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+.left-column .row-wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  align-self: stretch;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  padding: 10px;
+  margin-bottom: 7px;
+}
+.left-column .route-row-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 14px;
+}
+.route-row-wrap .combine {
+  margin: 0 7px;
+}
+.swap-option .francium-logo {
+  width: 17px;
+  margin-right: 5px;
+}
+.swap-option .zap-button-wrap {
+  width: 27%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 15px;
+}
+.zap-button-wrap .zap-button {
+  color: black;
+  background-color: #BB86FC;
+  border-radius: 4px;
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: bolder;
+  letter-spacing: 1.2px;
   cursor: pointer;
-}
-
-.zap-dashboard .swap-option.selected {
-  border-color: white;
-}
-
-.swap-option + .swap-option {
-  margin-top: 10px;
 }
 
 .jupiter-logo-container {
   display: flex;
   align-items: center;
-  font-family: 'Inter', sans-serif;
 }
 .jupiter-logo-container .jupiter-logo {
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
 }
 .jupiter-logo-container .logo-text {
-  font-weight: 700;
-  font-size: 18px;
+  font-size: 14px;
   margin-left: 5px;
 }
 
@@ -179,8 +383,8 @@
 }
 
 .token .icon {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   overflow: hidden;
   border-radius: 50%;
   margin-right: 10px;
@@ -188,14 +392,21 @@
 }
 
 .token .symbol {
-  font-size: 24px;
-  font-weight: bold;
+  font-weight: 500;
+  line-height: 1;
+  font-size: 16px;
 }
 
 .input-wrap {
   display: flex;
   align-items: center;
-  align-self: stretch;
+  height: 50px;
+  background-color: #2f2f2f;
+  border-radius: 4px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  font-size: 20px;
 }
 
 .number-input {
@@ -205,7 +416,13 @@
   background-color: transparent;
   margin-left: 10px;
   text-align: right;
-  font-size: 24px;
+  font-size: 20px;
+}
+
+.unstake-dashboard .title-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  margin-bottom: 15px;
 }
 
 .unstake-dashboard .token-list {
@@ -215,16 +432,156 @@
 }
 
 .token-list .token-option {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  align-self: stretch;
+  padding: 20px;
+  padding-right: 15px;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), #121212;
   border: 1px solid transparent;
-  border-radius: 5px;
-  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
 }
 .token-list .token-option.selected {
-  border-color: white;
+  border-color: #7F39FB;
+}
+.token-list .token-option + .token-option {
+  margin-top: 8px;
+}
+
+.token-option .label {
+  font-family: 'Montserrat', sans-serif;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+  border-radius: 16px;
+  font-size: 13px;
+  padding: 2px 13px;
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.token-option .token-balance {
+  flex: 1;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.unstake-dashboard .divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 30px 0 20px;
+}
+
+.unstake-dashboard .unstake-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  margin-bottom: 40px;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.unstake-dashboard .unstake-button,
+.vault-dashboard .unstake-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 40px;
+  background-color: #BB86FC;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.14), 0px 1px 10px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  color: #000000;
+  font-size: 13px;
+  letter-spacing: 1.25px;
+  font-weight: 700;
+}
+
+.vault-dashboard .unstake-button {
+  width: 350px;
+}
+
+.app .vault-dashboard {
+  /*border: 1px solid white;
+  border-radius: 5px;*/
+  margin-top: 30px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vault-dashboard .title-label {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: bold;
+  text-align: center;
+}
+
+.vault-dashboard .vault-list {
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+}
+
+.vault-list .vault {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.07)), #121212;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  align-items: center;
+  padding: 25px 0;
+  border: 1px solid transparent;
+}
+.vault-list .vault + .vault {
+  margin-left: 20px;
+}
+.vault-list .vault.active {
+  border-color: #BB86FC;
+}
+
+.vault-list .vault .vault-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.vault-list .vault .vault-name {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 10px 0;
+}
+
+.vault .token {
+  margin: 5px 0 15px;
+}
+
+.vault .vault-apy {
+  font-size: 22px;
+  font-weight: bold;
+  background: linear-gradient(233.42deg, #37F4BA 10.84%, #954AFF 85.39%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.vault .vault-tvl {
+  margin: 20px 0 10px;
+  font-size: 14px;
+}
+
+.vault .learn-more {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  font-size: 14px;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
