@@ -13,7 +13,7 @@ export const networkState = atom({
 
 export const endpointState = atom({
   key: 'Endpoint',
-  default: 'https://francium.rpcpool.com'
+  default: ''
 })
 
 export const connectionState = atom({

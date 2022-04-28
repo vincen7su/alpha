@@ -231,7 +231,7 @@ export function ProviderWrapper() {
   )
 
   useEffect(() => {
-    const socean = new Socean(network, 'https://francium.rpcpool.com')
+    const socean = new Socean(network, endpoint)
     setSocean(socean)
   }, [])
 
